@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c5a852c6-6db3-4dad-8fee-93c87422fa2b" name="Changes" comment="" />
+    <list default="true" id="c5a852c6-6db3-4dad-8fee-93c87422fa2b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/agents/hamiltonian.py" beforeDir="false" afterPath="$PROJECT_DIR$/agents/hamiltonian.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snake_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/snake_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_hamiltonian.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_hamiltonian.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,6 +22,12 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/agents/hamiltonian.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
