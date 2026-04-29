@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c5a852c6-6db3-4dad-8fee-93c87422fa2b" name="Changes" comment="Первый Рабочий комит" />
+    <list default="true" id="c5a852c6-6db3-4dad-8fee-93c87422fa2b" name="Changes" comment="Тестовый комит" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -151,12 +151,38 @@
       <option name="project" value="LOCAL" />
       <updated>1777499843646</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Тестовый комит">
+      <created>1777499901906</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1777499901906</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Тестовый комит">
+      <created>1777499951032</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1777499951032</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Тестовый текст" />
     <MESSAGE value="Первый Рабочий комит" />
-    <option name="LAST_COMMIT_MESSAGE" value="Первый Рабочий комит" />
+    <MESSAGE value="Тестовый комит" />
+    <option name="LAST_COMMIT_MESSAGE" value="Тестовый комит" />
   </component>
 </project>
