@@ -3,7 +3,7 @@ import pygame
 import numpy as np
 import random
 import sys
-
+# Тестовость
 
 class SnakeEnv:
     # Коды действий
