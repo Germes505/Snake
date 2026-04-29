@@ -1,3 +1,16 @@
-# Default ignored files
-/shelf/
-/workspace.xml
+# PyCharm / IDE
+.idea/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# OS files
+.DS_Store
+desktop.ini
