@@ -17,7 +17,7 @@ class SnakeEnv:
         self.cell_size = cell_size
         self.window_size = grid_size * cell_size
         self.render_mode = render_mode
-        self.max_steps = grid_size * grid_size * 50  # Защита от бесконечных эпизодов
+        self.max_steps = grid_size * grid_size * 200  # Защита от бесконечных эпизодов
 
         # Инициализация Pygame только для режима отрисовки
         if self.render_mode == 'human':
@@ -133,7 +133,7 @@ class SnakeEnv:
         self.screen.blit(txt, (10, self.window_size - 25))
 
         pygame.display.flip()
-        self.clock.tick(2)  # 60 FPS для плавности
+        self.clock.tick(120)  # 60 FPS для плавности
 
     def close(self):
         if self.render_mode == 'human':
