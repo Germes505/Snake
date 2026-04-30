@@ -3,7 +3,7 @@ import pygame
 from snake_env import SnakeEnv
 from agents.hamiltonian import HamiltonianAgent
 
-GRID_SIZE = 20  # Можно менять на 10
+GRID_SIZE = 10  # Можно менять на 10
 CELL_SIZE = 30
 
 env = SnakeEnv(grid_size=GRID_SIZE, cell_size=CELL_SIZE, render_mode='human')

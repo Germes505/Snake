@@ -132,7 +132,7 @@ class SnakeEnv:
         self.screen.blit(txt, (10, self.window_size - 25))
 
         pygame.display.flip()
-        self.clock.tick(300)
+        self.clock.tick(60)
     def close(self):
         if self.render_mode == 'human':
             pygame.quit()
