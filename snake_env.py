@@ -39,12 +39,24 @@ class SnakeEnv:
         self._place_food()
         return self.get_state()
 
+    def _place_food(self):
+        # Если поле заполнено, не пытаемся ставить еду
+        if len(self.snake) >= self.grid_size * self.grid_size:
+            self.done = True
+            self.food = None
+            return
+        while True:
+            r = random.randint(0, self.grid_size - 1)
+            c = random.randint(0, self.grid_size - 1)
+            if (r, c) not in self.snake:
+                self.food = (r, c)
+                break
+
     def step(self, action):
         if self.done:
             raise ValueError("Episode finished. Call reset() first.")
 
-        # Запрет разворота на 180°
-        opposite = self.direction ^ 1  # UP(0)↔DOWN(1), LEFT(2)↔RIGHT(3)
+        opposite = self.direction ^ 1
         if action != opposite:
             self.direction = action
 
@@ -52,14 +64,14 @@ class SnakeEnv:
         dr, dc = [(-1, 0), (1, 0), (0, -1), (0, 1)][self.direction]
         new_head = (head_r + dr, head_c + dc)
 
-        reward = -0.1  # Штраф за шаг (стимулирует быстрее есть)
+        reward = -0.1
         self.steps += 1
 
-        # Проверка столкновения со стеной
+        # Столкновение со стеной
         if not (0 <= new_head[0] < self.grid_size and 0 <= new_head[1] < self.grid_size):
             self.done = True
             reward = -10
-        # Проверка столкновения с собой
+        # Столкновение с собой
         elif new_head in self.snake:
             self.done = True
             reward = -10
@@ -68,11 +80,10 @@ class SnakeEnv:
             if new_head == self.food:
                 self.score += 1
                 reward = 10
-                self._place_food()
+                self._place_food()  # Теперь безопасно: внутри есть проверка на полное поле
             else:
                 self.snake.pop()
 
-        # Лимит шагов (важно для стабильного RL)
         if self.steps >= self.max_steps:
             self.done = True
 
@@ -81,14 +92,6 @@ class SnakeEnv:
 
         info = {"steps": self.steps, "length": len(self.snake)}
         return self.get_state(), reward, self.done, info
-
-    def _place_food(self):
-        while True:
-            r = random.randint(0, self.grid_size - 1)
-            c = random.randint(0, self.grid_size - 1)
-            if (r, c) not in self.snake:
-                self.food = (r, c)
-                break
 
     def get_state(self):
         """
@@ -108,33 +111,28 @@ class SnakeEnv:
         # Чёрный фон
         self.screen.fill((0, 0, 0))
 
-        # Рисуем еду - красный квадрат
-        pygame.draw.rect(self.screen, (255, 50, 50),
-                         (self.food[1] * self.cell_size,
-                          self.food[0] * self.cell_size,
-                          self.cell_size, self.cell_size))
+        # Рисуем еду - только если она существует
+        if self.food is not None:
+            pygame.draw.rect(self.screen, (255, 50, 50),
+                             (self.food[1] * self.cell_size,
+                              self.food[0] * self.cell_size,
+                              self.cell_size, self.cell_size))
 
         # Рисуем змейку - зелёные блоки
         for i, (r, c) in enumerate(self.snake):
-            # Голова - ярче, тело - темнее
-            if i == 0:
-                color = (100, 255, 100)  # Голова - светло-зелёная
-            else:
-                color = (0, 200, 0)  # Тело - зелёное
-
+            color = (100, 255, 100) if i == 0 else (0, 200, 0)
             pygame.draw.rect(self.screen, color,
                              (c * self.cell_size,
                               r * self.cell_size,
                               self.cell_size - 1, self.cell_size - 1))
 
-        # Минимальный HUD (опционально - можно закомментировать)
+        # HUD
         font = pygame.font.SysFont("consolas", 14)
         txt = font.render(f"Score: {self.score}", True, (200, 200, 200))
         self.screen.blit(txt, (10, self.window_size - 25))
 
         pygame.display.flip()
-        self.clock.tick(120)  # 60 FPS для плавности
-
+        self.clock.tick(300)
     def close(self):
         if self.render_mode == 'human':
             pygame.quit()
