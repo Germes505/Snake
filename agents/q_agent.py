@@ -94,16 +94,16 @@ class QAgent:
         return False
 
     def get_action(self, state):
-        """Возвращает действие на основе epsilon-greedy стратегии."""
+        self._ensure_state_exists(state)
+
+        # Бонус за исследование редко посещаемых состояний
+        visit_count = len([v for v in self.q_table.values() if any(v)])
+        curiosity_bonus = 0.1 / (1 + visit_count / 1000)
+
         if random.uniform(0, 1) < self.epsilon:
-            # Exploration: Случайное действие
             return random.choice(self.actions)
         else:
-            # Exploitation: Лучшее действие из Q-таблицы
-            self._ensure_state_exists(state)
-            q_values = self.q_table[state]
-            # Выбираем действие с максимальным Q-value
-            # Если есть несколько равных максимумов, выбираем случайно среди них
+            q_values = [q + curiosity_bonus for q in self.q_table[state]]
             max_val = max(q_values)
             max_indices = [i for i, v in enumerate(q_values) if v == max_val]
             return random.choice(max_indices)

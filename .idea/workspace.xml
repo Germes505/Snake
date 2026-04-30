@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5a852c6-6db3-4dad-8fee-93c87422fa2b" name="Changes" comment="Тестовый комит">
-      <change afterPath="$PROJECT_DIR$/agents/q_agent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/agents/voln_hamiltonian.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_test.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/agents/q_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/agents/q_agent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/snake_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/snake_env.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train_q_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_q_agent.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
