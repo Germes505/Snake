@@ -120,7 +120,7 @@ class SnakeEnv:
 
         # Рисуем змейку - зелёные блоки
         for i, (r, c) in enumerate(self.snake):
-            color = (100, 255, 100) if i == 0 else (0, 200, 0)
+            color = (0, 0, 255) if i == 0 else (0, 200, 0)
             pygame.draw.rect(self.screen, color,
                              (c * self.cell_size,
                               r * self.cell_size,

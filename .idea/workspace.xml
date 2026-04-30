@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c5a852c6-6db3-4dad-8fee-93c87422fa2b" name="Changes" comment="Тестовый комит">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/agents/shortened_hamiltonian.py" beforeDir="false" afterPath="$PROJECT_DIR$/agents/shortened_hamiltonian.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/snake_env.py" beforeDir="false" afterPath="$PROJECT_DIR$/snake_env.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_hamiltonian.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_hamiltonian.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_shortened.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_shortened.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +37,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="3CyhXPZZP2h3tpHX4pf5dsJqlER" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
