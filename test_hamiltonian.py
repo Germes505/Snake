@@ -1,9 +1,11 @@
 # test_hamiltonian.py
+import time
+
 import pygame
 from snake_env import SnakeEnv
 from agents.hamiltonian import HamiltonianAgent
 
-GRID_SIZE = 20  # Можно менять на 10
+GRID_SIZE = 20 # Можно менять на 10
 CELL_SIZE = 30
 
 env = SnakeEnv(grid_size=GRID_SIZE, cell_size=CELL_SIZE, render_mode='human')
@@ -28,6 +30,9 @@ else: env.direction = 3
 print(f"🟢 Запуск | Поле: {GRID_SIZE}x{GRID_SIZE} | Стартовая позиция: {head}")
 
 running = True
+scor_ = 0
+step_ = 0
+n = 0
 while running:
     # Обработка событий (обязательно каждый кадр, иначе "Не отвечает")
     for event in pygame.event.get():
@@ -52,12 +57,16 @@ while running:
     state, reward, done, info = env.step(action)
 
     if done:
+        n += 1
+        scor_ += info['length']
+        step_ += env.steps
         if len(env.snake) >= GRID_SIZE ** 2:
-            print(f"🏆 ПОБЕДА! Поле полностью заполнено. Score: {env.score}")
+            print(f"🏆 ПОБЕДА! Поле полностью заполнено. Score: {env.score}, Steps: {env.steps}")
         elif env.steps >= env.max_steps:
             print(f"⏱️ Таймаут. Score: {env.score}")
         else:
             print(f"💀 Смерть. Score: {env.score}")
-        running = False  # Останавливаем цикл после завершения
+        running = True  # Останавливаем цикл после завершения
+        time.sleep(10)
 
 env.close()

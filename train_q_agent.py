@@ -9,18 +9,19 @@ from agents.q_agent import QAgent
 
 # --- КОНФИГУРАЦИЯ ---
 GRID_SIZE = 20
-EPISODES = 100000  # Увеличили количество игр
-MAX_STEPS = 40000
+EPISODES = 300000  # Увеличили количество игр
+BASE_STEPS = 400
+STEP_BONUS = 400
 
 # 🎯 УЛУЧШЕННЫЕ ГИПЕРПАРАМЕТРЫ
 ALPHA = 0.001  # Чуть выше скорость обучения
 GAMMA = 0.99  # Больше внимания будущему
 EPSILON_START = 1.0
 EPSILON_END = 0.01
-EPSILON_DECAY = 0.9999  # МЕДЛЕННЕЕ затухание (агент дольше исследует)
+EPSILON_DECAY = 0.99998  # МЕДЛЕННЕЕ затухание (агент дольше исследует)
 
 SAVE_MODEL = True
-MODEL_PATH = "q_agent_model_improved.pkl"
+MODEL_PATH = "q_agent_model_steps_.pkl"
 
 def smooth_curve(data, window_size=100):
     """Сглаживание кривой методом скользящего среднего"""
@@ -35,7 +36,9 @@ def train():
 
     score_history = []
     epsilon_history = []
+    steps_history = []
     avg_score_window = deque(maxlen=100)
+    avg_steps_window = deque(maxlen=100)
 
     # Для отслеживания лучших результатов
     best_score = 0
@@ -49,57 +52,59 @@ def train():
         agent_state = agent.get_state(env)
         total_reward = 0
         done = False
-        step_count = 0
+        steps_taken = 0
+        step_budget = BASE_STEPS
+        prev_len = len(env.snake)
 
         while not done:
             action = agent.get_action(agent_state)
-            next_state_env, reward, done, info = env.step(action)
+            _, env_reward, done, info = env.step(action)
             next_state = agent.get_state(env)
-            step_count += 1
+            steps_taken += 1
 
-            # 🎯 УЛУЧШЕННАЯ ФУНКЦИЯ НАГРАД
+            # 🍎 Детекция съеденной еды и расширение бюджета
+            if len(env.snake) > prev_len:
+                step_budget = STEP_BONUS
+                prev_len = len(env.snake)
+
+            # ️ Проверка динамического лимита
+            if steps_taken >= step_budget:
+                done = True
+
+            # 🎯 Формирование награды (логика сохранена)
+            reward = env_reward
             if reward == 0:
-                reward = 0.001  # Меньше штраф за время (чтобы не боялся жить долго)
+                reward = 0.001
             elif reward > 0:
-                reward = 20  # Больше награда за еду
+                reward = 20
             elif done:
-                reward = -150  # Больше штраф за смерть
+                reward = -150
 
             agent.train(agent_state, action, reward, next_state, done)
-
             agent_state = next_state
             total_reward += reward
 
-            if step_count >= MAX_STEPS:
-                done = True
-
-        # Статистика
-        score = info['length'] - 3
+        score = info['length']
         score_history.append(score)
+        steps_history.append(steps_taken)
         epsilon_history.append(agent.epsilon)
         avg_score_window.append(score)
+        avg_steps_window.append(steps_taken)
 
-        # Отслеживание рекорда
         if score > best_score:
             best_score = score
             best_episode = episode
+            with open("q_agent_best.pkl", "wb") as f:
+                pickle.dump(agent, f)
 
-        # Затухание Epsilon
         if agent.epsilon > EPSILON_END:
             agent.epsilon *= EPSILON_DECAY
 
-        # Вывод прогресса
         if episode % 100 == 0:
             avg = sum(avg_score_window) / len(avg_score_window)
-            print(f"Ep: {episode:4d} | Score: {score:3d} | Avg: {avg:6.2f} | "
-                  f"ε: {agent.epsilon:.4f} | Best: {best_score} (ep {best_episode})")
-
-        if score > best_score:
-            best_score = score
-            best_episode = episode
-            # СОХРАНЯЕМ ЛУЧШУЮ МОДЕЛЬ
-            with open("q_agent_best.pkl", "wb") as f:
-                pickle.dump(agent, f)
+            avg_steps = sum(steps_history[-100:]) / 100
+            print(f"Ep: {episode:5d} | Score: {score:3d} | Avg: {avg:5.2f} | "
+                  f"Steps: {avg_steps:6.1f} | ε: {agent.epsilon:.4f} | Best: {best_score}")
 
     print(f"\n🏆 Лучший результат: {best_score} (эпизод {best_episode})")
 
@@ -110,10 +115,10 @@ def train():
         print(f"💾 Модель сохранена в {MODEL_PATH}")
 
     # --- 📊 УЛУЧШЕННАЯ ВИЗУАЛИЗАЦИЯ ---
-    visualize_training(score_history, epsilon_history)
+    visualize_training(score_history, epsilon_history, steps_history)
 
 
-def visualize_training(scores, epsilons):
+def visualize_training(scores, epsilons, steps):
     """Продвинутая визуализация (исправлена длина массивов)"""
     fig, axs = plt.subplots(2, 2, figsize=(12, 8))
     fig.suptitle('Progress of Q-Learning Agent', fontsize=14, fontweight='bold')
@@ -136,13 +141,17 @@ def visualize_training(scores, epsilons):
     axs[0, 1].set_ylabel('Epsilon')
     axs[0, 1].grid(True, alpha=0.3)
 
-    # 3. Распределение результатов
-    axs[1, 0].hist(scores, bins=50, color='green', alpha=0.7, edgecolor='black')
-    axs[1, 0].axvline(np.mean(scores), color='red', linestyle='dashed',
-                      linewidth=2, label=f'Mean: {np.mean(scores):.1f}')
-    axs[1, 0].set_title('Distribution of Scores')
-    axs[1, 0].set_xlabel('Score')
-    axs[1, 0].set_ylabel('Frequency')
+    # 3. Steps per Episode
+    axs[1, 0].plot(steps, alpha=0.4, color='green', label='Raw', linewidth=0.5)
+    if len(steps) >= 100:
+        smooth_steps = np.convolve(steps, np.ones(100) / 100, mode='valid')
+        axs[1, 0].plot(range(99, len(steps)), smooth_steps,
+                       label='Moving Avg (100)', color='darkgreen', linewidth=2)
+    axs[1, 0].axhline(y=BASE_STEPS, color='orange', linestyle=':',
+                      label=f'Base Steps ({BASE_STEPS})', alpha=0.7)
+    axs[1, 0].set_title('Steps per Episode')
+    axs[1, 0].set_xlabel('Episode')
+    axs[1, 0].set_ylabel('Steps')
     axs[1, 0].legend()
     axs[1, 0].grid(True, alpha=0.3)
 
@@ -165,51 +174,86 @@ def visualize_training(scores, epsilons):
         axs[1, 1].grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig('training_progress.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'{MODEL_PATH}.png', dpi=300, bbox_inches='tight')
     print("📊 Графики сохранены в 'training_progress.png'")
     plt.show()
 
 
-def play_trained_model(model_path="q_agent_model_improved.pkl"):
-    """Визуализация обученного агента"""
+def play_trained_model(model_path):
+    """Визуализация обученного агента с динамическим лимитом шагов"""
     try:
         with open(model_path, 'rb') as f:
             agent = pickle.load(f)
     except FileNotFoundError:
-        print(f"❌ Модель '{model_path}' не найдена!")
+        print(f"❌ Модель '{model_path}'.pkl не найдена!")
         return
 
-    agent.epsilon = 0.0  # Только умные ходы
-
+    agent.epsilon = 0.0
     env = SnakeEnv(grid_size=GRID_SIZE, cell_size=30, render_mode='human')
-    state = env.reset()
+
+    BASE_STEPS = 400
+    STEP_BONUS = 400
+
+    env.reset()
     agent_state = agent.get_state(env)
+    step_budget = BASE_STEPS
+    steps_taken = 0
+    prev_len = len(env.snake)
 
-    print("🐍 Запуск обученного агента. Нажмите R для рестарта.")
-
+    print(" Запуск. R=рестарт, Esc=выход")
     running = True
+    episode = 0
+    total_len = 0
+    total_steps = 0
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                elif event.key == pygame.K_r:
+                    episode += 1
+                    total_len += len(env.snake)
+                    total_steps += steps_taken
+                    print(
+                        f"#{episode} | Len: {len(env.snake)} | Steps: {steps_taken} | Avg Len: {total_len / episode:.1f}")
                     env.reset()
                     agent_state = agent.get_state(env)
+                    step_budget = BASE_STEPS
+                    steps_taken = 0
+                    prev_len = len(env.snake)
 
         action = agent.get_action(agent_state)
-        state, reward, done, info = env.step(action)
+        _, _, done, info = env.step(action)
         agent_state = agent.get_state(env)
+        steps_taken += 1
 
-        if done:
-            print(f"💀 Game Over. Score: {info['length'] - 3}")
+        if len(env.snake) > prev_len:
+            step_budget += STEP_BONUS
+            prev_len = len(env.snake)
+
+        if steps_taken >= step_budget or done:
+            episode += 1
+            length = info.get('length', len(env.snake))
+            total_len += length
+            total_steps += steps_taken
+            print(f"#{episode} | Len: {length:2d} | Steps: {steps_taken:4d} | Avg Len: {total_len / episode:5.1f}")
+
             env.reset()
             agent_state = agent.get_state(env)
+            step_budget = BASE_STEPS
+            steps_taken = 0
+            prev_len = len(env.snake)
 
+    if episode > 0:
+        print(
+            f"\n🏁 Итого: Эпизодов {episode}, Ср. длина {total_len / episode:.1f}, Ср. шаги {total_steps / episode:.1f}")
     env.close()
 
 
 if __name__ == "__main__":
     # Выбери режим:
-    # train()
-    play_trained_model()  # Раскомментируй для просмотра игры
+    #train()
+    play_trained_model(MODEL_PATH)  # Раскомментируй для просмотра игры

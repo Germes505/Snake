@@ -211,7 +211,7 @@ def play_trained_model(model_path=MODEL_PATH):
         agent_state = agent.get_state(env)
 
         if done:
-            print(f"💀 Game Over. Score: {info['length'] - 3}")
+            print(f"💀 Game Over. Score: {info['length']}, {env.steps}")
             env.reset()
             agent_state = agent.get_state(env)
 

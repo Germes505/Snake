@@ -52,8 +52,8 @@ while running:
         else:
             print(f"\n💀 Смерть. Score: {env.score} | Steps: {env.steps}")
 
-        print("⏸️ Пауза 8 сек (скриншот)...")
-        time.sleep(8)
-        running = False
+        # print("⏸️ Пауза 8 сек (скриншот)...")
+        # time.sleep(8)
+        running = True
 
 env.close()

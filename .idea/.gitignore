@@ -1,16 +1,47 @@
+# Перезаписать .gitignore новым содержимым
+@"
 # PyCharm / IDE
 .idea/
+.vscode/
+*.swp
+*.swo
 
 # Python cache
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 
-# Virtual Environment
+# Virtual Environment (ВАЖНО!)
 venv/
 env/
 ENV/
+gpu_env/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Training outputs (модели и результаты)
+*.pt
+*.pkl
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.gif
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
 
 # OS files
 .DS_Store
 desktop.ini
+Thumbs.db
+
+# Git
+*.lock
+"@ | Out-File -FilePath .gitignore -Encoding utf8

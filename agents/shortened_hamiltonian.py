@@ -40,8 +40,8 @@ class ShortenedHamiltonianAgent(HamiltonianAgent):
         2. Достижимость хвоста (head -> tail)
         3. Пространство хвоста (tail -> free_area > 15% поля)
         """
-        # 1. Длинные змейки не рискуют. На поздних этапах цикл гарантирует 100% выживание.
-        if len(snake) > self.grid_size * self.grid_size * 0.6:
+        # 1. На поздних этапах цикл гарантирует 100% выживание.
+        if len(snake) > self.grid_size * self.grid_size * 0.6: # Но как показала практика до 60 % не доживают
             return False
 
         new_head = path[-1]
@@ -54,8 +54,7 @@ class ShortenedHamiltonianAgent(HamiltonianAgent):
         if not self._can_reach(new_head, virtual_tail, obstacles):
             return False
 
-        # 3. 🔑 КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Хвост должен иметь пространство для отхода
-        # Считаем, сколько клеток доступно из хвоста. Если < 15% поля → хвост заперт.
+        # 3. Хвост должен иметь пространство для отхода
         tail_free_space = self._flood_fill_count(virtual_tail, obstacles)
         min_safe_space = (self.grid_size ** 2) * 0.15
 
@@ -88,7 +87,6 @@ class ShortenedHamiltonianAgent(HamiltonianAgent):
                 if nxt in body_map:
                     seg_idx = body_map[nxt]
                     body_num_from_tail = L - seg_idx
-                    # Волна должна догнать освобождающееся тело
                     if arrive_time - 1 < body_num_from_tail:
                         continue
 

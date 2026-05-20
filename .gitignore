@@ -24,9 +24,6 @@ gpu_env/
 # Training outputs (модели и результаты)
 *.pt
 *.pkl
-*.png
-*.jpg
-*.jpeg
 *.mp4
 *.gif
 

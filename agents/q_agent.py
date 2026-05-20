@@ -109,7 +109,7 @@ class QAgent:
             return random.choice(max_indices)
 
     def train(self, state, action, reward, next_state, done):
-        """Обновляет Q-таблицу по формуле Bellman."""
+        """Обновляет Q-таблицу по формуле Белмана."""
         self._ensure_state_exists(state)
         self._ensure_state_exists(next_state)
 
